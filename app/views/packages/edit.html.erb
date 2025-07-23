@@ -1,12 +1,20 @@
-<% content_for :title, "Editing package" %>
+<% content_for :title, "Editing #{@package.name}" %>
 
-<h1>Editing package</h1>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">Editing Package</h1>
+  <div class="flex space-x-2">
+    <%= link_to @package, class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+      <i class="fas fa-eye mr-2"></i> View Package
+    <% end %>
+  </div>
+</div>
 
-<%= render "form", package: @package %>
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+  <%= render "form", package: @package %>
+</div>
 
-<br>
-
-<div>
-  <%= link_to "Show this package", @package %> |
-  <%= link_to "Back to packages", packages_path %>
+<div class="mt-6 flex space-x-4">
+  <%= link_to "Back to Package", @package, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Packages", packages_path, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Home", root_path, class: "text-blue-600 hover:text-blue-900" %>
 </div>

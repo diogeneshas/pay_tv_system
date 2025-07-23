@@ -2,6 +2,7 @@
 class Package < ApplicationRecord
   belongs_to :plan
   belongs_to :additional_service, optional: true
+  has_many :subscriptions, dependent: :restrict_with_error
 
   validates :name, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true

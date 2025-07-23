@@ -1,11 +1,37 @@
-<% content_for :title, "New package" %>
+<% content_for :title, "New Package" %>
 
-<h1>New package</h1>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">New Package</h1>
+</div>
 
-<%= render "form", package: @package %>
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+  <%= render "form", package: @package %>
+</div>
 
-<br>
+<div class="mt-6">
+  <h2 class="text-xl font-semibold text-gray-900 mb-4">Important Information</h2>
+  <div class="bg-blue-50 p-4 rounded-lg">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-blue-800">Business Rules</h3>
+        <div class="mt-2 text-sm text-blue-700">
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Todo pacote deve ter pelo menos um serviço adicional</li>
+            <li>Se o preço não for informado, ele será calculado automaticamente somando o valor do plano e do serviço adicional</li>
+            <li>Um pacote pode ser associado a múltiplas assinaturas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div>
-  <%= link_to "Back to packages", packages_path %>
+<div class="mt-6 flex space-x-4">
+  <%= link_to "Back to Packages", packages_path, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Home", root_path, class: "text-blue-600 hover:text-blue-900" %>
 </div>

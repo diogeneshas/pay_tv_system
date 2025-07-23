@@ -1,22 +1,40 @@
-<div id="<%= dom_id package %>">
-  <p>
-    <strong>Name:</strong>
-    <%= package.name %>
-  </p>
-
-  <p>
-    <strong>Price:</strong>
-    <%= package.price %>
-  </p>
-
-  <p>
-    <strong>Plan:</strong>
-    <%= package.plan_id %>
-  </p>
-
-  <p>
-    <strong>Additional service:</strong>
-    <%= package.additional_service_id %>
-  </p>
-
+<div id="<%= dom_id package %>" class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+  <div class="px-4 py-5 sm:px-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900"><%= package.name %></h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-500">Package details and information</p>
+  </div>
+  <div class="border-t border-gray-200">
+    <dl>
+      <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Name</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= package.name %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Price</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= number_to_currency(package.price) %></dd>
+      </div>
+      <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Plan</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <% if package.plan %>
+            <%= link_to package.plan.name, package.plan, class: "text-blue-600 hover:text-blue-900" %>
+            <span class="text-gray-500 text-xs ml-2">(<%= number_to_currency(package.plan.price) %>)</span>
+          <% else %>
+            <span class="text-red-500">No plan selected</span>
+          <% end %>
+        </dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-gray-500">Additional Service</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <% if package.additional_service %>
+            <%= link_to package.additional_service.name, package.additional_service, class: "text-blue-600 hover:text-blue-900" %>
+            <span class="text-gray-500 text-xs ml-2">(<%= number_to_currency(package.additional_service.price) %>)</span>
+          <% else %>
+            <span class="text-red-500">No additional service selected</span>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
 </div>

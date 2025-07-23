@@ -1,11 +1,37 @@
-<% content_for :title, "New additional service" %>
+<% content_for :title, "New Additional Service" %>
 
-<h1>New additional service</h1>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">New Additional Service</h1>
+</div>
 
-<%= render "form", additional_service: @additional_service %>
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+  <%= render "form", additional_service: @additional_service %>
+</div>
 
-<br>
+<div class="mt-6">
+  <h2 class="text-xl font-semibold text-gray-900 mb-4">Important Information</h2>
+  <div class="bg-blue-50 p-4 rounded-lg">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-blue-800">Business Rules</h3>
+        <div class="mt-2 text-sm text-blue-700">
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Serviços adicionais são componentes que podem ser incluídos em pacotes</li>
+            <li>O preço do serviço adicional será somado ao preço do plano para calcular o preço total do pacote</li>
+            <li>Um serviço adicional pode ser usado em múltiplos pacotes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div>
-  <%= link_to "Back to additional services", additional_services_path %>
+<div class="mt-6 flex space-x-4">
+  <%= link_to "Back to Additional Services", additional_services_path, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Home", root_path, class: "text-blue-600 hover:text-blue-900" %>
 </div>

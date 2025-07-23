@@ -1,0 +1,65 @@
+<%= form_with(model: subscription_additional_service, class: "space-y-6") do |form| %>
+  <% if subscription_additional_service.errors.any? %>
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            <%= pluralize(subscription_additional_service.errors.count, "erro") %> impediu que este serviço adicional fosse salvo:
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% subscription_additional_service.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="col-span-1">
+      <div class="mb-4">
+        <%= form.label :subscription_id, "Assinatura", class: "block text-sm font-medium text-gray-700" %>
+        <% if params[:subscription_id].present? %>
+          <%= form.hidden_field :subscription_id, value: params[:subscription_id] %>
+          <div class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 sm:text-sm rounded-md">
+            <%= Subscription.find_by(id: params[:subscription_id])&.client&.name || "Assinatura ##{params[:subscription_id]}" %>
+          </div>
+        <% else %>
+          <%= form.collection_select :subscription_id, Subscription.all, :id, :display_name, 
+              { prompt: "Selecione uma assinatura" }, 
+              { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md" } %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-span-1">
+      <div class="mb-4">
+        <%= form.label :additional_service_id, "Serviço Adicional", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.collection_select :additional_service_id, AdditionalService.all, :id, :name, 
+            { prompt: "Selecione um serviço adicional" }, 
+            { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md" } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-50 p-4 rounded-md mb-4">
+    <h3 class="text-sm font-medium text-gray-700 mb-2">Observações</h3>
+    <div class="mb-4">
+      <%= form.label :notes, "Observações", class: "sr-only" %>
+      <%= form.text_area :notes, rows: 3, class: "shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Adicione observações sobre este serviço adicional..." %>
+    </div>
+  </div>
+
+  <div class="flex justify-end space-x-3">
+    <%= link_to 'Cancelar', subscription_additional_services_path, class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500" %>
+    <%= form.submit "Salvar", class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500" %>
+  </div>
+<% end %>

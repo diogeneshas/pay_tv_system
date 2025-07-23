@@ -1,0 +1,56 @@
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-3xl font-bold text-gray-900">Editar Serviço Adicional de Assinatura</h1>
+  <%= link_to 'Voltar', subscription_additional_services_path, class: "px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300" %>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Dados do Serviço Adicional</h2>
+    
+    <%= render 'form', subscription_additional_service: @subscription_additional_service %>
+  </div>
+</div>
+
+<div class="mt-8 bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Detalhes da Assinatura</h2>
+    
+    <div class="bg-gray-50 p-4 rounded-md">
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Cliente</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @subscription_additional_service.subscription&.client&.name || 'N/A' %></dd>
+        </div>
+        
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Pacote</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= @subscription_additional_service.subscription&.package&.name || 'N/A' %></dd>
+        </div>
+        
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Status da Assinatura</dt>
+          <dd class="mt-1">
+            <% if @subscription_additional_service.subscription&.status == 'active' %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>
+            <% elsif @subscription_additional_service.subscription&.status == 'inactive' %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inativo</span>
+            <% else %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">N/A</span>
+            <% end %>
+          </dd>
+        </div>
+        
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Período</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            <% if @subscription_additional_service.subscription&.start_date && @subscription_additional_service.subscription&.end_date %>
+              <%= @subscription_additional_service.subscription.start_date.strftime('%d/%m/%Y') %> - <%= @subscription_additional_service.subscription.end_date.strftime('%d/%m/%Y') %>
+            <% else %>
+              N/A
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

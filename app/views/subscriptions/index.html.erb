@@ -1,0 +1,105 @@
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-3xl font-bold text-gray-900">Assinaturas</h1>
+  <%= link_to 'Voltar', root_path, class: "px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300" %>
+</div>
+
+<div class="bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg leading-6 font-medium text-gray-900">Lista de Assinaturas</h2>
+      <%= link_to 'Nova Assinatura', new_subscription_path, class: "px-4 py-2 bg-indigo-600 rounded-md text-white hover:bg-indigo-700" %>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pacote</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Fim</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% if @subscriptions.any? %>
+            <% @subscriptions.each do |subscription| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= subscription.client&.name || 'N/A' %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= subscription.package&.name || 'N/A' %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= subscription.start_date&.strftime('%d/%m/%Y') || 'N/A' %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= subscription.end_date&.strftime('%d/%m/%Y') || 'N/A' %></td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <% if subscription.status == 'active' %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Ativo</span>
+                  <% elsif subscription.status == 'inactive' %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inativo</span>
+                  <% else %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"><%= subscription.status %></span>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <%= link_to 'Ver', subscription_path(subscription), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
+                  <%= link_to 'Editar', edit_subscription_path(subscription), class: "text-yellow-600 hover:text-yellow-900 mr-4" %>
+                  <%= link_to 'Excluir', subscription_path(subscription), method: :delete, data: { confirm: 'Tem certeza?' }, class: "text-red-600 hover:text-red-900" %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma assinatura encontrada</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="mt-8 bg-white overflow-hidden shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Informações sobre Assinaturas</h2>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-blue-700">
+            As assinaturas representam os contratos entre clientes e a empresa, definindo quais pacotes e serviços adicionais estão ativos.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h3 class="font-medium text-gray-900">Gerenciamento de Assinaturas</h3>
+        <p class="mt-2 text-sm text-gray-600">
+          Cada assinatura está vinculada a um cliente e a um pacote específico. O pacote inclui um plano base
+          e pelo menos um serviço adicional, conforme as regras de negócio do sistema.
+        </p>
+      </div>
+      
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h3 class="font-medium text-gray-900">Período de Vigência</h3>
+        <p class="mt-2 text-sm text-gray-600">
+          As assinaturas possuem datas de início e fim que determinam o período de vigência do contrato.
+          É importante monitorar essas datas para renovação ou cancelamento quando necessário.
+        </p>
+      </div>
+    </div>
+    
+    <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+      <h3 class="font-medium text-gray-900">Serviços Adicionais</h3>
+      <p class="mt-2 text-sm text-gray-600">
+        Cada assinatura pode ter serviços adicionais específicos vinculados a ela. Para gerenciar esses serviços,
+        utilize a seção <%= link_to 'Serviços da Assinatura', subscription_additional_services_path, class: "text-indigo-600 hover:text-indigo-900" %>.
+      </p>
+    </div>
+  </div>
+</div>

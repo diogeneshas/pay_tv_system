@@ -1,12 +1,20 @@
-<% content_for :title, "Editing plan" %>
+<% content_for :title, "Editing #{@plan.name}" %>
 
-<h1>Editing plan</h1>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">Editing Plan</h1>
+  <div class="flex space-x-2">
+    <%= link_to @plan, class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+      <i class="fas fa-eye mr-2"></i> View Plan
+    <% end %>
+  </div>
+</div>
 
-<%= render "form", plan: @plan %>
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+  <%= render "form", plan: @plan %>
+</div>
 
-<br>
-
-<div>
-  <%= link_to "Show this plan", @plan %> |
-  <%= link_to "Back to plans", plans_path %>
+<div class="mt-6 flex space-x-4">
+  <%= link_to "Back to Plan", @plan, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Plans", plans_path, class: "text-blue-600 hover:text-blue-900" %>
+  <%= link_to "Back to Home", root_path, class: "text-blue-600 hover:text-blue-900" %>
 </div>

@@ -19,10 +19,59 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-100">
+    <div class="min-h-screen">
+      <!-- Barra de navegação superior -->
+      <nav class="bg-indigo-600 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex">
+              <div class="flex-shrink-0 flex items-center">
+                <%= link_to root_path, class: "text-white font-bold text-xl" do %>
+                  Pay TV System
+                <% end %>
+              </div>
+              <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                <%= link_to "Home", root_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Planos", plans_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Pacotes", packages_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Serviços Adicionais", additional_services_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Clientes", clients_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Assinaturas", subscriptions_path, class: "text-white hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Conteúdo principal -->
+      <main class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <% if notice %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+              <p><%= notice %></p>
+            </div>
+          <% end %>
+          <% if alert %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+              <p><%= alert %></p>
+            </div>
+          <% end %>
+          
+          <%= yield %>
+        </div>
+      </main>
+
+      <!-- Rodapé -->
+      <footer class="bg-white mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <p class="text-center text-gray-500 text-sm">&copy; <%= Date.today.year %> Pay TV System - Sistema de Gestão de TV por Assinatura</p>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

@@ -1,0 +1,226 @@
+<%= form_with(model: subscription, class: "space-y-6") do |form| %>
+  <% if subscription.errors.any? %>
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            <%= pluralize(subscription.errors.count, "erro") %> impediu que esta assinatura fosse salva:
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% subscription.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="col-span-1">
+      <div class="mb-4">
+        <%= form.label :client_id, "Cliente", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.collection_select :client_id, Client.all, :id, :name, 
+            { prompt: "Selecione um cliente" }, 
+            { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
+      </div>
+
+      <div class="mb-4">
+        <div class="block text-sm font-medium text-gray-700 mb-2">Selecione um Plano ou Pacote</div>
+        
+        <div class="flex items-center mb-2">
+          <input type="radio" id="select_plan" name="subscription_type" value="plan" 
+                 class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                 <%= subscription.plan.present? ? 'checked' : (subscription.new_record? ? 'checked' : '') %>
+                 onclick="toggleSubscriptionType('plan')">
+          <label for="select_plan" class="ml-2 block text-sm text-gray-700">Plano</label>
+        </div>
+        
+        <div class="flex items-center mb-2">
+          <input type="radio" id="select_package" name="subscription_type" value="package" 
+                 class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                 <%= subscription.package.present? ? 'checked' : '' %>
+                 onclick="toggleSubscriptionType('package')">
+          <label for="select_package" class="ml-2 block text-sm text-gray-700">Pacote</label>
+        </div>
+        
+        <div id="plan_selection" class="mt-3 <%= subscription.plan.present? ? '' : 'hidden' %>">
+          <%= form.label :plan_id, "Plano", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.collection_select :plan_id, Plan.all, :id, :name, 
+              { prompt: "Selecione um plano" }, 
+              { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
+        </div>
+        
+        <div id="package_selection" class="mt-3 <%= subscription.package.present? ? '' : 'hidden' %>">
+          <%= form.label :package_id, "Pacote", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.collection_select :package_id, Package.all, :id, :name, 
+              { prompt: "Selecione um pacote" }, 
+              { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
+        </div>
+      </div>
+      
+      <script>
+        function toggleSubscriptionType(type) {
+          if (type === 'plan') {
+            // Mostrar seleção de plano e habilitar serviços adicionais
+            document.getElementById('plan_selection').classList.remove('hidden');
+            document.getElementById('package_selection').classList.add('hidden');
+            document.querySelector('select[name="subscription[package_id]"]').value = '';
+            toggleAdditionalServices(true);
+          } else {
+            // Mostrar seleção de pacote e desabilitar serviços adicionais
+            document.getElementById('package_selection').classList.remove('hidden');
+            document.getElementById('plan_selection').classList.add('hidden');
+            document.querySelector('select[name="subscription[plan_id]"]').value = '';
+            toggleAdditionalServices(false);
+          }
+        }
+        
+        function toggleAdditionalServices(enable) {
+          // Obter todos os checkboxes de serviços adicionais
+          const checkboxes = document.querySelectorAll('input[name="subscription[additional_service_ids][]"]');
+          const additionalServicesSection = document.getElementById('additional_services_section');
+          
+          checkboxes.forEach(checkbox => {
+            if (checkbox.type === 'checkbox') {
+              checkbox.disabled = !enable;
+              if (!enable) checkbox.checked = false;
+            }
+          });
+          
+          // Adicionar ou remover a classe para indicar visualmente que a seção está desabilitada
+          if (enable) {
+            additionalServicesSection.classList.remove('opacity-50');
+            additionalServicesSection.querySelector('.services-disabled-message').classList.add('hidden');
+          } else {
+            additionalServicesSection.classList.add('opacity-50');
+            additionalServicesSection.querySelector('.services-disabled-message').classList.remove('hidden');
+          }
+        }
+        
+        // Validar o formulário antes de enviar
+        document.querySelector('form').addEventListener('submit', function(event) {
+          const planSelected = document.querySelector('select[name="subscription[plan_id]"]').value !== '';
+          const packageSelected = document.querySelector('select[name="subscription[package_id]"]').value !== '';
+          
+          // Verificar se pelo menos um plano ou pacote foi selecionado
+          if (!planSelected && !packageSelected) {
+            event.preventDefault();
+            alert('Por favor, selecione um plano ou um pacote.');
+            return false;
+          }
+          
+          // Verificar se ambos foram selecionados (não deveria acontecer devido ao JavaScript, mas por segurança)
+          if (planSelected && packageSelected) {
+            event.preventDefault();
+            alert('Por favor, selecione apenas um plano OU um pacote, não ambos.');
+            return false;
+          }
+          
+          // Se o pacote foi selecionado, garantir que não há serviços adicionais marcados
+          if (packageSelected) {
+            const hasCheckedServices = Array.from(document.querySelectorAll('input[name="subscription[additional_service_ids][]"]'))
+              .filter(checkbox => checkbox.type === 'checkbox')
+              .some(checkbox => checkbox.checked);
+              
+            if (hasCheckedServices) {
+              event.preventDefault();
+              alert('Não é possível adicionar serviços adicionais quando um pacote é selecionado.');
+              return false;
+            }
+          }
+          
+          return true;
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+          const hasPlan = <%= subscription.plan.present? ? 'true' : 'false' %>;
+          const hasPackage = <%= subscription.package.present? ? 'true' : 'false' %>;
+          
+          if (hasPlan) {
+            document.getElementById('select_plan').checked = true;
+            toggleSubscriptionType('plan');
+          } else if (hasPackage) {
+            document.getElementById('select_package').checked = true;
+            toggleSubscriptionType('package');
+          } else {
+            // Default to plan if neither is selected
+            document.getElementById('select_plan').checked = true;
+            toggleSubscriptionType('plan');
+          }
+        });
+      </script>
+    </div>
+
+    <div class="col-span-1">
+      <div class="mb-4">
+        <%= form.label :subscription_date, "Data de Assinatura", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.date_field :subscription_date, value: Date.today, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+      </div>
+      
+      <div class="mb-4">
+        <%= form.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.date_field :start_date, value: Date.today, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div class="mb-4">
+        <%= form.label :end_date, "Data de Fim", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.date_field :end_date, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :status, [['Ativo', 'active'], ['Inativo', 'inactive']], 
+        { prompt: "Selecione o status" }, 
+        { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
+  </div>
+  
+  <div id="additional_services_section" class="mb-4 <%= subscription.package.present? ? 'opacity-50' : '' %>">
+    <div class="block text-sm font-medium text-gray-700 mb-2">Serviços Adicionais</div>
+    <div class="bg-gray-50 p-4 rounded-md">
+      <div class="services-disabled-message text-sm text-red-600 mb-3 <%= subscription.package.present? ? '' : 'hidden' %>">
+        <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        Serviços adicionais não são permitidos quando um pacote é selecionado.
+      </div>
+      
+      <% AdditionalService.all.each do |service| %>
+        <div class="flex items-center mb-2">
+          <%= check_box_tag 'subscription[additional_service_ids][]', service.id, 
+              subscription.additional_services.include?(service), 
+              id: "subscription_additional_service_ids_#{service.id}", 
+              disabled: subscription.package.present?,
+              class: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
+          <label for="subscription_additional_service_ids_<%= service.id %>" class="ml-2 block text-sm text-gray-700">
+            <%= service.name %> - <%= number_to_currency(service.price) %>
+          </label>
+        </div>
+      <% end %>
+      <%= hidden_field_tag 'subscription[additional_service_ids][]', nil %>
+    </div>
+  </div>
+
+  <div class="bg-gray-50 p-4 rounded-md mb-4">
+    <h3 class="text-sm font-medium text-gray-700 mb-2">Observações</h3>
+    <div class="mb-4">
+      <%= form.label :notes, "Observações", class: "sr-only" %>
+      <%= form.text_area :notes, rows: 3, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Adicione observações sobre esta assinatura..." %>
+    </div>
+  </div>
+
+  <div class="flex justify-end space-x-3">
+    <%= link_to 'Cancelar', subscriptions_path, class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= form.submit "Salvar", class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+  </div>
+<% end %>
